@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - SELLONE</title>
+  <link rel="stylesheet" href="camisetas_dis.css">
+</head>
+<body class="pagina-secundaria">
+
+  <!-- === SIDEBAR === -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="imagenes/SELLONE-LOGO.JPG" alt="Logo Sellone">
+      <h2>SELLONE</h2>
+    </div>
+    <ul class="sidebar-links">
+        <li><a href="index.html">🏠 <span>Inicio</span></a></li>
+        <li><a href="mision_vision.html"><span class="material-symbols-outlined">visibility</span> Visión y Misión</a></li>
+        <li><a href="productos.html">👕 <span>Productos</span></a></li>
+        <li><a href="#carrito-flotante" onclick="mostrarCarrito()">🛒 <span>Carrito</span></a></li>
+        <li id="registrarse-item"><a href="registro.html">📝 <span>Registrarse</span></a></li>
+        <li id="iniciar-sesion-item"><a href="login.html">🔑 <span>Iniciar Sesión</span></a></li>
+        <li id="cerrar-sesion-item" style="display: none;">
+          <a href="#" onclick="cerrarSesion()">🔒 <span>Cerrar Sesión</span></a>
+        </li>
+    </ul>
+    <div class="user-account">
+      <div class="user-profile">
+        <img src="imagenes/letra-j.png" alt="Perfil">
+        <div class="user-detail">
+          <h3 id="sidebar-nombre">Usuario</h3>
+          <span id="sidebar-rol">Cliente</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- === FORMULARIO CHECKOUT === -->
+  <div class="form-card checkout">
+    <h2>🛒 Finalizar Compra</h2>
+    <form id="checkout-form">
+
+      <!-- Datos personales -->
+      <h3>Datos personales</h3>
+      <input type="text" id="nombre" class="input" placeholder="Nombre completo" required>
+      <input type="email" id="correo" class="input" placeholder="Correo electrónico" required>
+      <input type="tel" id="telefono" class="input" placeholder="Teléfono" required>
+
+      <!-- Dirección de envío -->
+      <h3>Dirección de envío</h3>
+      <input type="text" id="direccion" class="input" placeholder="Dirección completa" required>
+      <input type="text" id="ciudad" class="input" placeholder="Ciudad" required>
+      <input type="text" id="departamento" class="input" placeholder="Departamento" required>
+      <input type="text" id="codigo-postal" class="input" placeholder="Código Postal" required>
+
+      <!-- Opciones de entrega -->
+      <h3>Entrega</h3>
+      <select id="entrega" class="input" required>
+        <option value="">Seleccionar...</option>
+        <option value="estandar">Estándar (3-5 días) - $10.000</option>
+        <option value="express">Exprés (1-2 días) - $20.000</option>
+      </select>
+
+      <!-- Método de pago -->
+      <h3>Método de pago</h3>
+      <select id="pago" class="input" required>
+        <option value="">Seleccionar...</option>
+        <option value="wompi">Wompi</option>
+        <option value="contraentrega">Contraentrega</option>
+        <option value="transferencia">Transferencia Bancaria</option>
+      </select>
+
+      <!-- Notas -->
+      <h3>Notas adicionales</h3>
+      <textarea id="notas" class="input" rows="3" placeholder="Ej: Dejar en portería"></textarea>
+
+      <!-- Resumen del carrito -->
+      <h3>Resumen de tu compra</h3>
+      <ul id="resumen-carrito"></ul>
+      <p><strong>Total: </strong>$<span id="total-compra">0</span></p>
+
+      <button type="submit" class="btn">Confirmar Compra</button>
+    </form>
+  </div>
+
+  <!-- === SCRIPT === -->
+  <script>
+    let carrito = [];
+
+    function renderizarResumen() {
+      carrito = JSON.parse(localStorage.getItem("carrito_" + (JSON.parse(localStorage.getItem("usuarioActivo"))?.correo || "invitado"))) || [];
+      const lista = document.getElementById("resumen-carrito");
+      const total = document.getElementById("total-compra");
+      lista.innerHTML = "";
+      let suma = 0;
+
+      carrito.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.nombre} - $${item.precio.toLocaleString()}`;
+        lista.appendChild(li);
+        suma += item.precio;
+      });
+
+      total.textContent = suma.toLocaleString();
+    }
+
+    renderizarResumen();
+
+    // Procesar el checkout
+    document.getElementById("checkout-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      if (carrito.length === 0) {
+        alert("Tu carrito está vacío");
+        return;
+      }
+
+      // Aquí podrías enviar los datos a tu backend
+      localStorage.removeItem("carrito_" + (JSON.parse(localStorage.getItem("usuarioActivo"))?.correo || "invitado"));
+
+      window.location.href = "gracias_compra.html";
+    });
+  </script>
+
+</body>
+</html>

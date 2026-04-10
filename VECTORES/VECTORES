@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mezcla de Vectores Ordenados</title>
+  
+</head>
+<body>
+  <h2>Ingrese dos vectores de 5 números ordenados ascendentemente</h2>
+
+  <h3>Vector 1:</h3>
+  <div id="vector1"></div>
+
+  <h3>Vector 2:</h3>
+  <div id="vector2"></div>
+
+  <button onclick="mezclarVectores()">Mezclar Vectores</button>
+
+  <h3>Resultado:</h3>
+  <div id="resultado"></div>
+
+  <script>
+    // Crear campos de entrada
+    const v1 = document.getElementById("vector1");
+    const v2 = document.getElementById("vector2");
+
+    for (let i = 0; i < 5; i++) {
+      v1.innerHTML += `Elemento ${i + 1}: <input type="number" id="v1_${i}"><br>`;
+      v2.innerHTML += `Elemento ${i + 1}: <input type="number" id="v2_${i}"><br>`;
+    }
+
+    function leerVector(idPrefix) {
+      let vector = [];
+      for (let i = 0; i < 5; i++) {
+        let valor = Number(document.getElementById(`${idPrefix}_${i}`).value);
+        if (isNaN(valor)) {
+          alert(`El valor en la posición ${i + 1} del ${idPrefix === 'v1' ? 'Vector 1' : 'Vector 2'} no es válido.`);
+          return null;
+        }
+        if (i > 0 && valor <= vector[i - 1]) {
+          alert(`El número ingresado en la posición ${i + 1} no está en orden ascendente.`);
+          return null;
+        }
+        vector.push(valor);
+      }
+      return vector;
+    }
+
+    function mezclarVectores() {
+      let vec1 = leerVector("v1");
+      let vec2 = leerVector("v2");
+
+      if (vec1 === null || vec2 === null) return;
+
+      // Mezclar vectores ordenadamente
+      let resultado = [];
+      let i = 0, j = 0;
+
+      while (i < vec1.length && j < vec2.length) {
+        if (vec1[i] <= vec2[j]) {
+          resultado.push(vec1[i]);
+          i++;
+        } else {
+          resultado.push(vec2[j]);
+          j++;
+        }
+      }
+
+      // Agregar los elementos restantes
+      while (i < vec1.length) resultado.push(vec1[i++]);
+      while (j < vec2.length) resultado.push(vec2[j++]);
+
+      document.getElementById("resultado").innerText = `Vector mezclado ordenado: ${resultado.join(", ")}`;
+    }
+  </script>
+</body>
+</html>

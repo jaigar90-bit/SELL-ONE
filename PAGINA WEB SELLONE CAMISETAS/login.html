@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión - SELLONE LTDA</title>
+  <link rel="stylesheet" href="camisetas_dis.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+
+    <!-- === SIDEBAR === -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="imagenes/SELLONE-LOGO.JPG" alt="Logo Sellone">
+      <h2>SELLONE</h2>
+    </div>
+    <ul class="sidebar-links">
+        <li><a href="index.html">🏠 <span>Inicio</span></a></li>
+        <li><a href="mision_vision.html"><span class="material-symbols-outlined">visibility</span> Visión y Misión</a></li>
+        <li><a href="productos.html">👕 <span>Productos</span></a></li>
+        <li><a href="#carrito-flotante" onclick="mostrarCarrito()">🛒 <span>Carrito</span></a></li>
+  <!-- Solo visibles si NO está loggeado -->
+        <li id="registrarse-item"><a href="registro.html">📝 <span>Registrarse</span></a></li>
+        <li id="iniciar-sesion-item"><a href="login.html">🔑 <span>Iniciar Sesión</span></a></li>
+  <!-- Solo visible si SÍ está loggeado -->
+        <li id="cerrar-sesion-item" style="display: none;">
+        <a href="#" onclick="cerrarSesion()">🔒 <span>Cerrar Sesión</span></a>
+      </li>
+    </ul>
+    <div class="user-account">
+      <div class="user-profile">
+        <img src="imagenes/letra-j.png" alt="Perfil">
+        <div class="user-detail">
+          <h3 id="sidebar-nombre">Usuario</h3>
+          <span id="sidebar-rol">Cliente</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- === CONTENIDO PRINCIPAL === -->
+
+  <body class="login-page"></body>
+    <main class="main-content">
+    <section class="login">
+      <h2>Iniciar Sesión</h2>
+      <form onsubmit="return iniciarSesion()" class="form-card">
+        <input type="email" id="login-correo" class="input" placeholder="Correo electrónico" required>
+        
+        <div class="password-container">
+          <input type="password" id="login-clave" class="input" placeholder="Contraseña" required>
+          <button type="button" class="toggle-pass" onclick="verClave('login-clave', this)">👁️</button>
+        </div>
+
+        <button type="submit" class="btn">Entrar</button>
+      </form>
+
+      <div class="registro-opcion">
+        <button onclick="window.location.href='registro.html'" class="btn-secundario">
+          Crear cuenta
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- === SCRIPT === -->
+  <script>
+    /* === LOGIN === */
+    function iniciarSesion() {
+      const correo = document.getElementById("login-correo").value.trim().toLowerCase();
+      const clave = document.getElementById("login-clave").value;
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+      const user = usuarios.find(u => u.correo === correo && u.clave === clave);
+
+      if (user) {
+        localStorage.setItem("usuarioActivo", JSON.stringify(user));
+        window.location.href = "bienvenido.html";
+      } else {
+        alert("Correo o contraseña incorrectos.");
+      }
+      return false; // Evita que el form recargue la página
+    }
+
+    /* === VER CONTRASEÑA === */
+    function verClave(idCampo, boton) {
+      const campo = document.getElementById(idCampo);
+      if (campo.type === "password") {
+        campo.type = "text";
+        boton.textContent = "🙈";
+      } else {
+        campo.type = "password";
+        boton.textContent = "👁️";
+      }
+    }
+  </script>
+</body>
+</html>

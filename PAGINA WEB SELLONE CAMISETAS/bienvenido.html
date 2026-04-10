@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido - SELLONE LTDA</title>
+  <link rel="stylesheet" href="camisetas_dis.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+  <!-- === SIDEBAR FLOTANTE === -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="imagenes/SELLONE-LOGO.JPG" alt="Logo Sellone">
+      <h2>SELLONE</h2>
+    </div>
+    <ul class="sidebar-links">
+        <li><a href="index.html">🏠 <span>Inicio</span></a></li>
+        <li><a href="mision_vision.html"><span class="material-symbols-outlined">visibility</span> Visión y Misión</a></li>
+        <li><a href="productos.html">👕 <span>Productos</span></a></li>
+        <li><a href="#carrito-flotante" onclick="mostrarCarrito()">🛒 <span>Carrito</span></a></li>
+  <!-- Solo visibles si NO está loggeado -->
+        <li id="registrarse-item"><a href="registro.html">📝 <span>Registrarse</span></a></li>
+        <li id="iniciar-sesion-item"><a href="login.html">🔑 <span>Iniciar Sesión</span></a></li>
+  <!-- Solo visible si SÍ está loggeado -->
+        <li id="cerrar-sesion-item" style="display: none;">
+        <a href="#" onclick="cerrarSesion()">🔒 <span>Cerrar Sesión</span></a>
+      </li>
+    </ul>
+    <div class="user-account">
+      <div class="user-profile">
+        <img src="imagenes/letra-j.png" alt="Perfil">
+        <div class="user-detail">
+          <h3 id="sidebar-nombre">Usuario</h3>
+          <span id="sidebar-rol">Cliente</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- === CONTENIDO PRINCIPAL === -->
+  <main class="main-content">
+    <section class="bienvenida">
+      <h1 id="saludo">¡Bienvenido!</h1>
+      <p>Gracias por iniciar sesión en <b>SELLONE CAMISETAS</b>. Ya puedes explorar nuestros productos y realizar tu compra.</p>
+      <button class="btn" onclick="window.location.href='index.html#productos'">Ir a Productos</button>
+      <button class="btn" onclick="window.location.href='mision_vision.html'">Conoce nuestra Visión y Misión</button>
+    </section>
+  </main>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const user = JSON.parse(localStorage.getItem("usuarioActivo"));
+      if (user && user.nombres) {
+        document.getElementById("saludo").textContent = "¡Bienvenido, " + user.nombres + "!";
+        document.getElementById("sidebar-nombre").textContent = user.nombres;
+      } else {
+        window.location.href = "index.html#login";
+      }
+    });
+
+    function cerrarSesion() {
+      localStorage.removeItem("usuarioActivo");
+      window.location.href = "index.html#login";
+    }
+  </script>
+</body>
+</html>

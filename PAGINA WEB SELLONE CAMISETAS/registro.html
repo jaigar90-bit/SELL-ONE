@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro - SELLONE LTDA</title>
+  <link rel="stylesheet" href="camisetas_dis.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body class="registro-page">
+
+    <!-- === SIDEBAR === -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="imagenes/SELLONE-LOGO.JPG" alt="Logo Sellone">
+      <h2>SELLONE</h2>
+    </div>
+    <ul class="sidebar-links">
+        <li><a href="index.html">🏠 <span>Inicio</span></a></li>
+        <li><a href="mision_vision.html"><span class="material-symbols-outlined">visibility</span> Visión y Misión</a></li>
+        <li><a href="#productos.html">👕 <span>Productos</span></a></li>
+        <li><a href="#carrito-flotante" onclick="mostrarCarrito()">🛒 <span>Carrito</span></a></li>
+  <!-- Solo visibles si NO está loggeado -->
+        <li id="registrarse-item"><a href="registro.html">📝 <span>Registrarse</span></a></li>
+        <li id="iniciar-sesion-item"><a href="login.html">🔑 <span>Iniciar Sesión</span></a></li>
+  <!-- Solo visible si SÍ está loggeado -->
+        <li id="cerrar-sesion-item" style="display: none;">
+        <a href="#" onclick="cerrarSesion()">🔒 <span>Cerrar Sesión</span></a>
+      </li>
+    </ul>
+    <div class="user-account">
+      <div class="user-profile">
+        <img src="imagenes/letra-j.png" alt="Perfil">
+        <div class="user-detail">
+          <h3 id="sidebar-nombre">Usuario</h3>
+          <span id="sidebar-rol">Cliente</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- === CONTENIDO PRINCIPAL === -->
+  <main class="main-content">
+    <section class="registro">
+      <h2>Crear Cuenta</h2>
+      <form onsubmit="return registrarUsuario()" class="form-card">
+        <input type="text" id="reg-nombres" class="input" placeholder="Nombres" required>
+        <input type="text" id="reg-apellidos" class="input" placeholder="Apellidos" required>
+        <input type="email" id="reg-correo" class="input" placeholder="Correo electrónico" required>
+        <input type="date" id="reg-fecha" class="input" required>
+        <input type="tel" id="reg-telefono" class="input" placeholder="Teléfono" required>
+        <div class="password-container">
+          <input type="password" id="reg-clave" class="input" placeholder="Contraseña" required>
+          <button type="button" class="toggle-pass" onclick="verClave('reg-clave', this)">👁️</button>
+        </div>
+        <button type="submit" class="btn">Registrarme</button>
+      </form>
+      <div class="registro-opcion">
+        <button onclick="window.location.href='login.html'" class="btn-secundario">
+        Ya tengo cuenta
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- === SCRIPT === -->
+  <script>
+    function cargarUsuarios() {
+      try { return JSON.parse(localStorage.getItem("usuarios")) || []; }
+      catch { return []; }
+    }
+    function guardarUsuarios(arr) {
+      localStorage.setItem("usuarios", JSON.stringify(arr));
+    }
+
+    function registrarUsuario() {
+      const nombres = document.getElementById("reg-nombres").value.trim();
+      const apellidos = document.getElementById("reg-apellidos").value.trim();
+      const correo = document.getElementById("reg-correo").value.trim().toLowerCase();
+      const fecha = document.getElementById("reg-fecha").value;
+      const telefono = document.getElementById("reg-telefono").value.trim();
+      const clave = document.getElementById("reg-clave").value;
+
+      if (!nombres || !apellidos || !correo || !fecha || !telefono || !clave) {
+        alert("Por favor completa todos los campos.");
+        return false;
+      }
+
+      const usuarios = cargarUsuarios();
+      if (usuarios.some(u => u.correo === correo)) {
+        alert("Ya existe una cuenta con este correo.");
+        return false;
+      }
+
+      usuarios.push({ nombres, apellidos, correo, fecha, telefono, clave });
+      guardarUsuarios(usuarios);
+
+      localStorage.setItem("ultimoRegistrado", JSON.stringify({ nombres, correo }));
+      window.location.href = "registro_exitoso.html";
+      return false;
+    }
+
+    function verClave(idCampo, boton) {
+      const campo = document.getElementById(idCampo);
+      if (campo.type === "password") {
+        campo.type = "text";
+        boton.textContent = "🙈";
+      } else {
+        campo.type = "password";
+        boton.textContent = "👁️";
+      }
+    }
+  </script>
+</body>
+</html>

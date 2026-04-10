@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Análisis de Edades</title>
+</head>
+<body>
+  <h2>Ingrese las edades (entre 1 y 120)</h2>
+  <div id="inputs"></div>
+  <button onclick="analizarEdades()">Analizar</button>
+
+  <h3>Resultados:</h3>
+  <div id="resultados"></div>
+
+  <script>
+    // Crear campos de entrada
+    const contenedor = document.getElementById("inputs");
+    for (let i = 0; i < 10; i++) {
+      contenedor.innerHTML += `Edad ${i + 1}: <input type="number" id="edad${i}" min="1" max="120"><br>`;
+    }
+
+    function analizarEdades() {
+      let edades = [];
+      for (let i = 0; i < 10; i++) {
+        let valor = Number(document.getElementById(`edad${i}`).value);
+        if (valor < 1 || valor > 120 || isNaN(valor)) {
+          alert(`Edad inválida en el campo ${i + 1}. Debe estar entre 1 y 120.`);
+          return;
+        }
+        edades.push(valor);
+      }
+
+      let menores = 0;
+      let mayores = 0;
+      let adultosMayores = 0;
+      let suma = 0;
+      let edadMin = Math.min(...edades);
+      let edadMax = Math.max(...edades);
+
+      for (let edad of edades) {
+        if (edad < 18) {
+          menores++;
+        } else if (edad >= 18 && edad < 60) {
+          mayores++;
+        } else {
+          adultosMayores++;
+        }
+        suma += edad;
+      }
+
+      let promedio = suma / edades.length;
+
+      document.getElementById("resultados").innerHTML = `
+        <p>Menores de edad: ${menores}</p>
+        <p>Mayores de edad: ${mayores}</p>
+        <p>Adultos mayores: ${adultosMayores}</p>
+        <p>Edad más baja: ${edadMin}</p>
+        <p>Edad más alta: ${edadMax}</p>
+        <p>Promedio de edades: ${promedio.toFixed(2)}</p>
+      `;
+    }
+  </script>
+</body>
+</html>

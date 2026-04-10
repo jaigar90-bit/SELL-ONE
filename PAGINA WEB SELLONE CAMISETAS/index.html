@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda de Camisetas - SELLONE LTDA</title>
+  <link rel="stylesheet" href="camisetas_dis.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- === SIDEBAR FLOTANTE === -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="imagenes/SELLONE-LOGO.JPG" alt="Logo Sellone">
+      <h2>SELLONE</h2>
+    </div>
+    <ul class="sidebar-links">
+        <li><a href="#index.html">🏠 <span>Inicio</span></a></li>
+        <li><a href="mision_vision.html"><span class="material-symbols-outlined">visibility</span> Visión y Misión</a></li>
+        <li><a href="#productos.html">👕 <span>Productos</span></a></li>
+        <li><a href="#carrito-flotante" onclick="mostrarCarrito()">🛒 <span>Carrito</span></a></li>
+  <!-- Solo visibles si NO está loggeado -->
+        <li id="registrarse-item"><a href="registro.html">📝 <span>Registrarse</span></a></li>
+        <li id="iniciar-sesion-item"><a href="login.html">🔑 <span>Iniciar Sesión</span></a></li>
+  <!-- Solo visible si SÍ está loggeado -->
+        <li id="cerrar-sesion-item" style="display: none;">
+        <a href="#" onclick="cerrarSesion()">🔒 <span>Cerrar Sesión</span></a>
+      </li>
+    </ul>
+
+    <div class="user-account">
+      <div class="user-profile">
+        <img src="imagenes/letra-j.png" alt="Usuario">
+        <div class="user-detail">
+          <h3 id="usuario-nombre">Invitado</h3>
+          <span id="usuario-estado">No loggeado</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- === CONTENIDO PRINCIPAL === -->
+  <main class="main-content">
+    <div id="toast" class="toast"></div>
+    
+    <!-- === LANDING === -->
+    <section id="inicio" class="inicio-landing">
+      <div class="landing-content">
+        <img src="imagenes/SELLONE-LOGO.JPG" alt="Logo SELLONE" class="landing-logo">
+        <h1>SELLONE CAMISETAS</h1>
+        <p>Estilo urbano, calidad y autenticidad desde 2024.</p>
+        <button class="btn" onclick="window.location.href='#productos'">Explorar Productos</button>
+      </div>
+    </section>
+
+    <button class="btn" onclick="window.location.href='productos.html'">Explorar Productos</button>
+
+  <!-- === CARRITO FLOTANTE === -->
+  <div id="carrito-flotante">
+  <div class="carrito-header">
+    <h3>🛒 Tu Carrito</h3>
+    <button class="cerrar-carrito" onclick="cerrarCarrito()">❌</button>
+  </div>
+  <ul id="lista-carrito-flotante"></ul>
+  <div id="total-carrito">Total: $0</div>
+  <button class="btn" onclick="window.location.href='checkout.html'">Ir al Checkout</button>
+</div>
+
+  <!-- === SCRIPT === -->
+  <script>
+  /* === TOAST === */
+  function mostrarToast(mensaje, tipo = "success", callback) {
+    const toast = document.getElementById("toast");
+    toast.textContent = mensaje;
+    toast.className = "toast show " + tipo;
+    setTimeout(() => {
+      toast.className = "toast";
+      if (callback) callback();
+    }, 2500);
+  }
+
+  /* === CARRITO === */
+  let carrito = [];
+
+  function mostrarCarrito() {
+  const carritoFlotante = document.getElementById("carrito-flotante");
+  carritoFlotante.style.display = "block"; // Mostrar siempre
+  }
+
+  function cerrarCarrito() {
+  const carritoFlotante = document.getElementById("carrito-flotante");
+  carritoFlotante.style.display = "none"; // Ocultar
+  }
+
+  function agregarCarrito(producto) {
+    carrito.push(producto);
+    actualizarCarrito();
+    mostrarToast(producto.nombre + " agregado al carrito.", "success");
+  }
+
+  function eliminarDelCarrito(index) {
+    const eliminado = carrito[index].nombre;
+    carrito.splice(index, 1);
+    actualizarCarrito();
+    mostrarToast(eliminado + " eliminado del carrito.", "error");
+  }
+
+  function actualizarCarrito() {
+    const lista = document.getElementById("lista-carrito-flotante");
+    const carritoFlotante = document.getElementById("carrito-flotante");
+    const totalEl = document.getElementById("total-carrito");
+
+    lista.innerHTML = "";
+    let total = 0;
+
+    carrito.forEach((item, index) => {
+      const li = document.createElement("li");
+      li.textContent = `${item.nombre} - $${item.precio.toLocaleString()}`;
+      const btnEliminar = document.createElement("button");
+      btnEliminar.textContent = "❌";
+      btnEliminar.className = "btn-eliminar";
+      btnEliminar.onclick = () => eliminarDelCarrito(index);
+      li.appendChild(btnEliminar);
+      lista.appendChild(li);
+      total += item.precio;
+    });
+
+    totalEl.textContent = "Total: $" + total.toLocaleString();
+    carritoFlotante.style.display = carrito.length > 0 ? "block" : "none";
+
+    // 🔹 Guardar carrito por usuario loggeado
+    const user = JSON.parse(localStorage.getItem("usuarioActivo"));
+    if (user) {
+      localStorage.setItem("carrito_" + user.correo, JSON.stringify(carrito));
+    }
+  }
+
+  /* === INICIALIZACIÓN === */
+window.addEventListener("DOMContentLoaded", () => {
+  const user = JSON.parse(localStorage.getItem("usuarioActivo"));
+
+  const cerrarSesionItem = document.getElementById("cerrar-sesion-item");
+  const iniciarSesionItem = document.getElementById("iniciar-sesion-item");
+  const registrarseItem = document.getElementById("registrarse-item");
+
+  if (user) {
+    document.getElementById("usuario-nombre").textContent = user.nombres;
+    document.getElementById("usuario-estado").textContent = "Cliente";
+    carrito = JSON.parse(localStorage.getItem("carrito_" + user.correo)) || [];
+
+    // 🔹 Mostrar solo cerrar sesión
+    cerrarSesionItem.style.display = "block";
+    iniciarSesionItem.style.display = "none";
+    registrarseItem.style.display = "none";
+  } else {
+    carrito = [];
+
+    // 🔹 Mostrar iniciar/registrar y ocultar cerrar sesión
+    cerrarSesionItem.style.display = "none";
+    iniciarSesionItem.style.display = "block";
+    registrarseItem.style.display = "block";
+  }
+
+  actualizarCarrito();
+});
+
+/* === CERRAR SESIÓN === */
+function cerrarSesion() {
+  localStorage.removeItem("usuarioActivo");
+  carrito = []; // Vaciar carrito en memoria
+  actualizarCarrito();
+
+  // 🔹 Alternar visibilidad
+  document.getElementById("cerrar-sesion-item").style.display = "none";
+  document.getElementById("iniciar-sesion-item").style.display = "block";
+  document.getElementById("registrarse-item").style.display = "block";
+
+  mostrarToast("Has cerrado sesión correctamente.", "success", () => {
+    window.location.href = "index.html#login";
+  });
+}
+
+  </script>
+</body>
+</html>
+
+
+

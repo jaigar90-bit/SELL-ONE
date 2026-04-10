@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Encuesta Musical - Emisora</title>
+  
+</head>
+<body>
+  <div class="container">
+    <h2>Encuesta de Preferencias Musicales</h2>
+
+    <button onclick="mostrarFormulario()">Agregar Persona</button>
+    <button onclick="consultarPersona()">Consultar Persona</button>
+
+    <div id="formulario" style="display:none;">
+      <h3>Agregar Persona</h3>
+      <input type="text" id="nombre" placeholder="Nombre completo">
+      <input type="text" id="cedula" placeholder="Cédula">
+      <input type="date" id="fechaNacimiento">
+      <input type="email" id="correo" placeholder="Correo electrónico">
+      <input type="text" id="residencia" placeholder="Ciudad de residencia">
+      <input type="text" id="origen" placeholder="Ciudad de origen">
+
+      <h4>Canciones favoritas</h4>
+      <div class="song-group">
+        <input type="text" id="artista1" placeholder="Artista 1">
+        <input type="text" id="titulo1" placeholder="Título 1">
+      </div>
+      <div class="song-group">
+        <input type="text" id="artista2" placeholder="Artista 2">
+        <input type="text" id="titulo2" placeholder="Título 2">
+      </div>
+      <div class="song-group">
+        <input type="text" id="artista3" placeholder="Artista 3">
+        <input type="text" id="titulo3" placeholder="Título 3">
+      </div>
+
+      <button onclick="agregarPersona()">Guardar Persona</button>
+    </div>
+
+    <div id="consulta" style="display:none;">
+      <h3>Consultar Persona</h3>
+      <input type="number" id="posicion" placeholder="Ingrese la posición (0-5)">
+      <button onclick="mostrarPersona()">Buscar</button>
+    </div>
+
+    <div id="salida" class="output"></div>
+  </div>
+
+  <script>
+    const personas = [];
+
+    function mostrarFormulario() {
+      document.getElementById("formulario").style.display = "block";
+      document.getElementById("consulta").style.display = "none";
+      document.getElementById("salida").innerHTML = "";
+    }
+
+    function consultarPersona() {
+      document.getElementById("formulario").style.display = "none";
+      document.getElementById("consulta").style.display = "block";
+      document.getElementById("salida").innerHTML = "";
+    }
+
+    function agregarPersona() {
+      if (personas.length >= 6) {
+        alert("Ya se ha alcanzado el límite de 6 personas.");
+        return;
+      }
+
+      const persona = {
+        nombre: document.getElementById("nombre").value,
+        cedula: document.getElementById("cedula").value,
+        fechaNacimiento: document.getElementById("fechaNacimiento").value,
+        correo: document.getElementById("correo").value,
+        residencia: document.getElementById("residencia").value,
+        origen: document.getElementById("origen").value,
+        canciones: [
+          {
+            artista: document.getElementById("artista1").value,
+            titulo: document.getElementById("titulo1").value
+          },
+          {
+            artista: document.getElementById("artista2").value,
+            titulo: document.getElementById("titulo2").value
+          },
+          {
+            artista: document.getElementById("artista3").value,
+            titulo: document.getElementById("titulo3").value
+          }
+        ]
+      };
+
+      personas.push(persona);
+      alert("Persona registrada exitosamente.");
+      document.getElementById("formulario").reset();
+    }
+
+    function mostrarPersona() {
+      const pos = Number(document.getElementById("posicion").value);
+
+      if (isNaN(pos) || pos < 0 || pos >= personas.length) {
+        alert("Posición inválida o vacía.");
+        return;
+      }
+
+      const p = personas[pos];
+      let salida = `Nombre: ${p.nombre}\nCédula: ${p.cedula}\nNacimiento: ${p.fechaNacimiento}\nCorreo: ${p.correo}\nResidencia: ${p.residencia}\nOrigen: ${p.origen}\n\nCanciones favoritas:\n`;
+
+      p.canciones.forEach((c, i) => {
+        salida += `  ${i + 1}. ${c.artista} - "${c.titulo}"\n`;
+      });
+
+      document.getElementById("salida").innerText = salida;
+    }
+  </script>
+</body>
+</html>

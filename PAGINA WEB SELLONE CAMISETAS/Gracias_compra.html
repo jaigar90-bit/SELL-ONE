@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gracias por tu compra - SELLONE</title>
+  <link rel="stylesheet" href="camisetas_dis.css">
+  <link rel="stylesheet" href="gracias_compra.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+</head>
+
+</head>
+<body>
+
+    <!-- === SIDEBAR === -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="imagenes/SELLONE-LOGO.JPG" alt="Logo Sellone">
+      <h2>SELLONE</h2>
+    </div>
+    <ul class="sidebar-links">
+        <li><a href="index.html">🏠 <span>Inicio</span></a></li>
+        <li><a href="mision_vision.html"><span class="material-symbols-outlined">visibility</span> Visión y Misión</a></li>
+        <li><a href="productos.html">👕 <span>Productos</span></a></li>
+        <li><a href="#carrito-flotante" onclick="mostrarCarrito()">🛒 <span>Carrito</span></a></li>
+  <!-- Solo visibles si NO está loggeado -->
+        <li id="registrarse-item"><a href="registro.html">📝 <span>Registrarse</span></a></li>
+        <li id="iniciar-sesion-item"><a href="login.html">🔑 <span>Iniciar Sesión</span></a></li>
+  <!-- Solo visible si SÍ está loggeado -->
+        <li id="cerrar-sesion-item" style="display: none;">
+        <a href="#" onclick="cerrarSesion()">🔒 <span>Cerrar Sesión</span></a>
+      </li>
+    </ul>
+    <div class="user-account">
+      <div class="user-profile">
+        <img src="imagenes/letra-j.png" alt="Perfil">
+        <div class="user-detail">
+          <h3 id="sidebar-nombre">Usuario</h3>
+          <span id="sidebar-rol">Cliente</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="gracias-container">
+    <div class="gracias-card">
+      <h1>🎉 ¡Gracias por tu compra!</h1>
+      <p>Tu pedido ha sido procesado con éxito.</p>
+      <p>Pronto recibirás un correo con los detalles de tu envío.</p>
+      <a href="index.html" class="btn" id="volver-tienda">Volver a la tienda</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("volver-tienda").addEventListener("click", () => {
+      const user = JSON.parse(localStorage.getItem("usuarioActivo"));
+      if (user) {
+        localStorage.removeItem("carrito_" + user.correo);
+      } else {
+        localStorage.removeItem("carrito_invitado");
+      }
+    });
+  </script>
+
+</body>
+</html>
